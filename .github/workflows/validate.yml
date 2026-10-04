@@ -28,8 +28,12 @@ jobs:
       - name: Validate plugin and marketplace manifests
         run: |
           set -Eeuo pipefail
-          jq -e '.name and .version and .description' .claude-plugin/plugin.json
-          jq -e '.name and .owner and (.plugins | length > 0)' .claude-plugin/marketplace.json
+          # No version in either manifest: Claude Code then versions the plugin by
+          # commit SHA, so every merge reaches users on update. A pinned version
+          # would hold them on the cached copy until someone edits the string,
+          # and releases here are tags, which never edit it.
+          jq -e '.name and .description and (has("version") | not)' .claude-plugin/plugin.json
+          jq -e '.name and .owner and (.plugins | length > 0) and all(.plugins[]; has("version") | not)' .claude-plugin/marketplace.json
           echo "OK: manifests parse and carry their required fields"
 
       - name: Validate skill frontmatter (name + description; name == dir)

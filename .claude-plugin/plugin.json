@@ -1,7 +1,6 @@
 {
   "name": "codemaps",
   "description": "Writes and refreshes docs/CODEMAPS (INDEX.md, architecture.md, dependencies.md) for a repository against one contract, and loads one module per stack it detects in the tree: Python, Ansible, Terraform, PowerShell, Docker stacks, GitLab CI, Renovate, pre-commit hooks, .NET.",
-  "version": "0.1.0",
   "author": {
     "name": "Pete Kloehn"
   },
