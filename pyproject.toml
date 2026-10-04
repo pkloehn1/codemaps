@@ -1,0 +1,16 @@
+# Release policy for python-semantic-release, which the release workflow runs
+# through paragon-stats/github-actions/release. Nothing here is packaged: the
+# action reads only this table. commitlint holds the mapping to the shared
+# commit-types.txt, so drift fails a pull request rather than a release.
+
+[tool.semantic_release]
+# v0.0.0 is the seed tag: 0.x until a deliberate 1.0.
+allow_zero_version = true
+major_on_zero = false
+
+[tool.semantic_release.commit_parser_options]
+# The parser only classifies types it is allowed to see; the default set
+# lacks security and revert, so all twelve are listed.
+allowed_tags = ["build", "chore", "ci", "docs", "feat", "fix", "perf", "refactor", "revert", "security", "style", "test"]
+minor_tags = ["feat"]
+patch_tags = ["fix", "perf", "security", "revert"]

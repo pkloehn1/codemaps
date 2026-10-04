@@ -30,6 +30,26 @@ claude --plugin-dir /path/to/codemaps
 
 Restart Claude Code to apply the update.
 
+The plugin carries no `version`, so Claude Code versions it by commit: every merge to `main` is an update.
+
+## Releases
+
+Releases are tags, cut by the [`release` action](https://github.com/paragon-stats/github-actions/tree/main/release) paragon-stats uses.
+
+On each push to `main`, python-semantic-release reads the Conventional Commits since the last `vX.Y.Z` tag.
+
+| Type | Release |
+| --- | --- |
+| `feat` | minor |
+| `fix`, `perf`, `security`, `revert` | patch |
+| anything else | none |
+
+A release-cutting type must change something under `skills/`; pull requests fail `commitlint` otherwise.
+
+The tag is GPG-signed, the GitHub Release lists the changes, and nothing is committed back to `main`.
+
+The bump policy is `[tool.semantic_release]` in `pyproject.toml`, held to the shared `commit-types.txt` by `commitlint`.
+
 ## What a map is
 
 Three files under `docs/CODEMAPS/`: `INDEX.md`, `architecture.md`, `dependencies.md`.

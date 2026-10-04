@@ -1,0 +1,21 @@
+---
+# Every branch is <type>/<issue#>-<short-kebab-summary>, checked by the action
+# paragon-stats uses, against the same shared commit-types.txt.
+name: branch-name
+
+"on":
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  branch-name:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: paragon-stats/github-actions/branch-name@8e164c6001e7a28bf2b06e6c528f97cda9af37cb  # v2.2.1
+        with:
+          branch: ${{ github.event.pull_request.head.ref }}
+...

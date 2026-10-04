@@ -1,0 +1,34 @@
+---
+# Tag-only releases with python-semantic-release, through the shared action
+# paragon-stats uses. On every push to main it reads the Conventional Commits
+# since the last vX.Y.Z tag: a feat cuts a minor, a fix, perf, security or
+# revert a patch, anything else nothing. It pushes a GPG-signed tag and creates
+# the GitHub Release; it never commits back to main.
+name: release
+
+"on":
+  push:
+    branches: [main]
+
+permissions: {}
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      # The one credential-persisting checkout here: the action pushes the
+      # signed tag over git, and computes the bump from the full tag history.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          fetch-depth: 0
+      - uses: paragon-stats/github-actions/release@8e164c6001e7a28bf2b06e6c528f97cda9af37cb  # v2.2.1
+        with:
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+...
