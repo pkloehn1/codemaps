@@ -1,0 +1,5 @@
+---
+# The same line rule the maps are written under: one paragraph per thought, on one line.
+MD013:
+  line_length: 200
+  tables: false

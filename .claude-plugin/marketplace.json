@@ -1,0 +1,22 @@
+{
+  "name": "codemaps",
+  "owner": {
+    "name": "Pete Kloehn"
+  },
+  "description": "Single-plugin marketplace publishing codemaps: a skill that writes and refreshes docs/CODEMAPS against one contract, with one module per stack.",
+  "plugins": [
+    {
+      "name": "codemaps",
+      "source": "./",
+      "description": "Writes and refreshes docs/CODEMAPS (INDEX.md, architecture.md, dependencies.md) against one contract, and loads one module per stack it detects in the tree.",
+      "category": "documentation",
+      "tags": [
+        "codemaps",
+        "documentation",
+        "docs-as-code",
+        "architecture",
+        "agent-skills"
+      ]
+    }
+  ]
+}

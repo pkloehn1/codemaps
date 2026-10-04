@@ -1,0 +1,29 @@
+# Git configuration shared by the homelab repositories
+# Addresses systematic AI code generation whitespace issues
+
+[core]
+    # Detect trailing whitespace and spaces before tabs
+    whitespace = trailing-space,space-before-tab
+    # Ensure consistent line endings (LF)
+    autocrlf = false
+
+[apply]
+    # Automatically fix whitespace when applying patches
+    whitespace = fix
+
+[diff]
+    # Highlight whitespace errors in diffs
+    wsErrorHighlight = all
+
+[advice]
+    # Show advice for whitespace fixes
+    addIgnoredFile = false
+
+[push]
+    # Pushing a new branch sets its upstream in the same step, instead of
+    # failing with an instruction to re-run using --set-upstream.
+    autoSetupRemote = true
+
+# Usage:
+# git config --local include.path ../.gitconfig
+# This allows per-repository configuration inheritance

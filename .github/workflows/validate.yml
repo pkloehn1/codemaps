@@ -1,0 +1,77 @@
+---
+# Structural validation of the plugin and its skill on every PR/push.
+# Dependency-light (jq + bash, plus markdownlint-cli2) so it always runs; mirrors
+# what `claude plugin validate` checks (manifest validity, skill frontmatter,
+# skill name == directory name) and adds what only this repository knows: every
+# module carries the six headings the core reads, and the Modules table in
+# SKILL.md names every module file that exists and no other.
+name: validate
+
+"on":
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions: {}
+
+jobs:
+  structure:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate plugin and marketplace manifests
+        run: |
+          set -Eeuo pipefail
+          jq -e '.name and .version and .description' .claude-plugin/plugin.json
+          jq -e '.name and .owner and (.plugins | length > 0)' .claude-plugin/marketplace.json
+          jq -e . release-please-config.json .release-please-manifest.json
+          echo "OK: manifests parse and carry their required fields"
+
+      - name: Validate skill frontmatter (name + description; name == dir)
+        run: |
+          set -Eeuo pipefail
+          fail=0
+          while IFS= read -r skill; do
+            dir="$(basename "$(dirname "${skill}")")"
+            fm="$(awk 'NR==1&&/^---/{f=1;next} /^---/{exit} f' "${skill}")"
+            name="$(printf '%s\n' "${fm}" | sed -nE 's/^name:[[:space:]]*"?([^"]+)"?.*/\1/p')"
+            desc="$(printf '%s\n' "${fm}" | sed -nE 's/^description:[[:space:]]*(.*)/\1/p')"
+            if [ -z "${name}" ]; then echo "FAIL ${skill}: missing name"; fail=1; fi
+            if [ -z "${desc}" ]; then echo "FAIL ${skill}: missing description"; fail=1; fi
+            if [ "${#desc}" -gt 1024 ]; then echo "FAIL ${skill}: description over 1024 characters"; fail=1; fi
+            if [ -n "${name}" ] && [ "${name}" != "${dir}" ]; then
+              echo "FAIL ${skill}: name '${name}' != dir '${dir}'"; fail=1
+            fi
+          done < <(find skills -name SKILL.md)
+          [ "${fail}" -eq 0 ] && echo "OK: skills valid"
+          exit "${fail}"
+
+      - name: Validate modules (six headings; Modules table lists exactly the module files)
+        run: |
+          set -Eeuo pipefail
+          fail=0
+          dir=skills/codemaps
+          [ -d "${dir}/modules" ] || { echo "OK: no modules yet"; exit 0; }
+          for f in "${dir}"/modules/*.md; do
+            n="$(grep -c '^## ' "${f}")"
+            if [ "${n}" -ne 6 ]; then echo "FAIL ${f}: ${n} '## ' headings, expected 6"; fail=1; fi
+          done
+          listed="$(grep -oE '\(modules/[a-z-]+\.md\)' "${dir}/SKILL.md" | tr -d '()' | sort)"
+          present="$(cd "${dir}" && ls modules/*.md | grep -v '^modules/TEMPLATE\.md$' | sort)"
+          if [ "${listed}" != "${present}" ]; then
+            echo "FAIL: Modules table and modules/ differ"
+            diff <(printf '%s\n' "${listed}") <(printf '%s\n' "${present}") || true
+            fail=1
+          fi
+          [ "${fail}" -eq 0 ] && echo "OK: modules valid"
+          exit "${fail}"
+
+      - name: Lint Markdown
+        run: npx --yes markdownlint-cli2 --config .markdownlint.yml "**/*.md"
+...
