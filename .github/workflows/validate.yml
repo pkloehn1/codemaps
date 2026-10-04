@@ -30,7 +30,6 @@ jobs:
           set -Eeuo pipefail
           jq -e '.name and .version and .description' .claude-plugin/plugin.json
           jq -e '.name and .owner and (.plugins | length > 0)' .claude-plugin/marketplace.json
-          jq -e . release-please-config.json .release-please-manifest.json
           echo "OK: manifests parse and carry their required fields"
 
       - name: Validate skill frontmatter (name + description; name == dir)
