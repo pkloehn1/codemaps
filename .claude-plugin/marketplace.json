@@ -8,7 +8,7 @@
     {
       "name": "codemaps",
       "source": "./",
-      "description": "Writes and refreshes docs/CODEMAPS (INDEX.md, architecture.md, dependencies.md) against one contract, and loads one module per stack it detects in the tree.",
+      "description": "Writes and refreshes docs/CODEMAPS (INDEX.md, architecture.md, dependencies.md, and an optional credentials.md) against one contract, and loads one module per stack it detects in the tree.",
       "category": "documentation",
       "tags": [
         "codemaps",

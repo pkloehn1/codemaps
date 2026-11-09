@@ -35,6 +35,8 @@ The playbooks run per host class (`provision-<class>.yml`, or `site.yml`); `ansi
 - role defaults carrying versions, and the manager that moves them
 - the ansible-core and ansible-lint pins and where they sit
 
+`credentials.md`, when present: the vault files and lookups each playbook or role reads its credentials through.
+
 ## Dead state
 
 A role no playbook invokes. A collection nothing in the tree references. An inventory group no playbook targets. A playbook with no `roles:` key. A Molecule scenario for a role that no longer exists.

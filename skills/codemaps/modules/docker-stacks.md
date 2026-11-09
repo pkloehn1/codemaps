@@ -34,6 +34,8 @@ Any `docker-compose.yml`, `docker-compose.yaml`, `compose.yml` or `compose.yaml`
 - versions outside `image:` lines, and the custom manager for each
 - images under a rule that holds majors back, as a pointer to the rule rather than its reasoning
 
+`credentials.md`, when present: the external secrets each stack needs, and what creates them.
+
 ## Dead state
 
 A service no stack deploys. A config directory no service mounts. A network, secret or config declared that no service uses. A stack file for a stack the cluster no longer runs.
