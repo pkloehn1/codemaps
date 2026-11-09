@@ -2,7 +2,7 @@
 
 A Claude Code plugin whose skill writes and refreshes `docs/CODEMAPS/` for a repository.
 
-Three Markdown maps that a session reads before exploring an unfamiliar area, so it starts from a map instead of a fresh survey.
+Three Markdown maps, and an optional fourth for credentials, that a session reads before exploring an unfamiliar area, so it starts from a map instead of a fresh survey.
 
 One core carries the contract. One module per stack says what to look for and what the map must say for that stack. The core detects the stacks in the tree and loads only those modules.
 
@@ -52,7 +52,7 @@ The bump policy is `[tool.semantic_release]` in `pyproject.toml`, held to the sh
 
 ## What a map is
 
-Three files under `docs/CODEMAPS/`: `INDEX.md`, `architecture.md`, `dependencies.md`.
+Three files under `docs/CODEMAPS/`: `INDEX.md`, `architecture.md`, `dependencies.md`. A repository with credential consumers adds `credentials.md`, the one optional map.
 
 Each area file has the same section shape, stays under a stated token budget, describes rather than instructs, and names only paths that exist in `git ls-files`.
 
