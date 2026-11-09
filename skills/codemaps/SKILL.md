@@ -1,6 +1,6 @@
 ---
 name: codemaps
-description: Writes and refreshes docs/CODEMAPS (INDEX.md, architecture.md, dependencies.md) against one contract - three files, a fixed section shape, a token budget, describe-never-instruct, every path from git ls-files - and loads one module per stack it detects in the tree (Python, Ansible, Terraform, PowerShell, Docker stacks, GitLab CI, Renovate, pre-commit hooks, .NET) for what to look for and what the map must say. Use when asked to write, refresh or review codemaps, after a structural change, or wherever /ecc:update-codemaps would otherwise run.
+description: Writes and refreshes docs/CODEMAPS (INDEX.md, architecture.md, dependencies.md, and an optional credentials.md) against one contract - three files plus one optional, a fixed section shape, a token budget, describe-never-instruct, every path from git ls-files - and loads one module per stack it detects in the tree (Python, Ansible, Terraform, PowerShell, Docker stacks, GitLab CI, Renovate, pre-commit hooks, .NET) for what to look for and what the map must say. Use when asked to write, refresh or review codemaps, after a structural change, or wherever /ecc:update-codemaps would otherwise run.
 ---
 
 # Codemaps
@@ -13,13 +13,16 @@ This file is the contract. A repository's standards link here and add only what 
 
 ## What exists
 
-Three files under `docs/CODEMAPS/`, and no more:
+Three files under `docs/CODEMAPS/` always, one optional area map, and no more:
 
 | File | Contents |
 | --- | --- |
 | `INDEX.md` | The area table, the scope boundary, how a refresh runs, and what is not enforced |
 | `architecture.md` | What the repository contains and how a change reaches production |
 | `dependencies.md` | Every pin location, one class of dependency each, and what tracks it |
+| `credentials.md` | Optional. Each workflow stage that needs a credential, its read path, and where the exact item names are recorded |
+
+`credentials.md` exists when the repository has credential consumers (CI jobs, deploys, workstation launchers, signing) whose read paths would otherwise live in another map.
 
 ECC's template also names `backend.md`, `frontend.md` and `data.md`. A repository with no API routes, no component tree and no application database does not create them.
 
@@ -27,7 +30,7 @@ Its `INDEX.md` says so, which makes their absence read as a decision rather than
 
 `INDEX.md` holds, in this order:
 
-- the area table: one row per map and what it covers, never a summary of its contents
+- the area table: one row per map, `credentials.md` included when it exists, and what it covers, never a summary of its contents
 - the three absent files, and why
 - the scope: reference material, and where procedure and rationale live instead
 - how to refresh: through this skill, not the generic command
@@ -38,6 +41,19 @@ Its `INDEX.md` says so, which makes their absence read as a decision rather than
 Each area file opens with `Last Updated` and `Entry Points`, then Architecture, Key Modules, Data Flow, External Dependencies, Related Areas.
 
 Table columns adapt to what the area holds. The headings do not.
+
+`credentials.md` takes the same headings. Its read-path table has one row per workflow stage or consumer, with three columns:
+
+- the stage
+- the read path: the mechanism, and the code that performs it
+- where the exact item names are recorded: a register, a CI file, a defaults file
+
+## Credentials
+
+The writing rules and the budget below apply to `credentials.md` unchanged. Two more are its own:
+
+- **Names only, never values.** A map is read by every session and published with the tree.
+- **Point to the register.** Where the repository keeps its own register of secrets, name it rather than listing every identity, folder or key it holds.
 
 ## Writing rules
 
@@ -66,7 +82,7 @@ Multiply each count by 1.33. The method is named because two plausible estimator
 
 A cap below what an honest map needs buys a wrong map at full price. There it produced seven of seventeen packages and four false counts.
 
-A map over the cap has a layout problem. Reconsider the area; never cut content to reach a number.
+A map over the cap has a layout problem. Reconsider the area; never cut content to reach a number. Credential read paths moving out of `dependencies.md` into `credentials.md` is one such reconsideration.
 
 A map that exceeds the budget while the tree it describes is still shrinking records the overage in `INDEX.md` rather than trimming to fit.
 
@@ -94,7 +110,7 @@ A stack in the tree with no module here is mapped from the rules above. The gap 
 
 | It does | This contract says |
 | --- | --- |
-| Creates `backend.md`, `frontend.md`, `data.md` | Three files, and no more |
+| Creates `backend.md`, `frontend.md`, `data.md` | Three files, `credentials.md` where credential consumers need it, and no more |
 | Writes an HTML comment header | `Last Updated` and `Entry Points` lines |
 | Reports to `.reports/codemap-diff.txt` | No such tree exists |
 | Imposes its own section shape | ECC's `doc-updater` shape, above |
@@ -106,7 +122,7 @@ A stack in the tree with no module here is mapped from the rules above. The gap 
 ## Procedure
 
 1. Write `git ls-files` to a scratch file. Select the modules whose patterns it matches, and read them.
-2. Rescan the tree for the areas each map covers, following each selected module's Look for list.
+2. Rescan the tree for the areas each map covers, following each selected module's Look for list, and for the credential consumers that decide whether `credentials.md` exists.
 3. Rewrite by hand, against this contract and the selected modules rather than the generic command. Write for the tree as it will be once the branch merges.
 4. Re-date only the files whose content changed. A date bump on an unchanged file is the behaviour `generate.ts` is criticised for.
 5. Check every path the maps name against the scratch file, and each map's word count against the budget.

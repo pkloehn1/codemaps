@@ -35,6 +35,8 @@
 - the registry a component resolves against
 - the tag another tool reads back, so it exists once
 
+`credentials.md`, when present: the CI/CD variables each job reads, and the jobs that do not run without them.
+
 ## Dead state
 
 A job no rule lets run. A stage no job uses. An include at a `ref:` nothing resolves. A component no consumer includes. An exemption naming a job the file no longer declares.

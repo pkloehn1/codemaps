@@ -32,6 +32,8 @@ Each root module (`terraform/environments/<env>/<area>/`, or the repository root
 - whether lockfiles exist
 - the bot manager that tracks providers (`terraform`), and what it does not reach
 
+`credentials.md`, when present: the identity that runs `plan` and `apply`, and how each provider and backend receives its credentials.
+
 ## Dead state
 
 A module no root calls. A provider declared with no resources. A directory under `terraform/` that holds no Terraform. A variable no root sets and no module reads.
